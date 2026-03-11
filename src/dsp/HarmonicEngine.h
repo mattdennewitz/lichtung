@@ -48,6 +48,12 @@ private:
     double currentVelocity_ = 0.0;
     bool gateOpen_ = false;
 
+    // Legato gate counting and portamento glide
+    int gateCount_ = 0;
+    int targetNote_ = 69;
+    double glidedNote_ = 69.0;
+    bool hasPlayedNote_ = false;
+
     // FM LFO state
     double fmPhase_ = 0.0;
 
@@ -74,4 +80,5 @@ private:
     std::atomic<float>* fmRateParam_ = nullptr;
     std::atomic<float>* attackParam_ = nullptr;
     std::atomic<float>* releaseParam_ = nullptr;
+    std::atomic<float>* glideParam_ = nullptr;
 };

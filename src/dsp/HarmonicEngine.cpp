@@ -23,6 +23,12 @@ void HarmonicEngine::prepare (double sampleRate, int /*maxBlockSize*/,
     currentFreq_ = 440.0;
     currentVelocity_ = 0.0;
 
+    // Reset legato/glide state
+    gateCount_ = 0;
+    targetNote_ = 69;
+    glidedNote_ = 69.0;
+    hasPlayedNote_ = false;
+
     // Initialize SmoothedValue for master level
     masterLevelSmoothed_.reset (sampleRate, 64.0 / sampleRate);
     masterLevelSmoothed_.setCurrentAndTargetValue (0.8f);
@@ -53,15 +59,24 @@ void HarmonicEngine::prepare (double sampleRate, int /*maxBlockSize*/,
     fmRateParam_ = apvts.getRawParameterValue ("fm_rate");
     attackParam_ = apvts.getRawParameterValue ("attack");
     releaseParam_ = apvts.getRawParameterValue ("release");
+    glideParam_ = apvts.getRawParameterValue ("glide");
 }
 
 double HarmonicEngine::renderSample()
 {
+    // --- Glide (slide~): exponential follower on note number ---
+    double glideMs = static_cast<double> (*glideParam_);
+    double glideSamples = std::max (1.0, glideMs * 0.001 * sampleRate_);
+    glidedNote_ += (static_cast<double> (targetNote_) - glidedNote_) / glideSamples;
+
+    // --- Convert glided note to frequency (mtof~) ---
+    double baseFreq = 440.0 * std::pow (2.0, (glidedNote_ - 69.0) / 12.0);
+
     // --- Section 1: Tuning (gen~ section 1) ---
     double coarseTune = static_cast<double> (*coarseTuneParam_);
     double fineTune = static_cast<double> (*fineTuneParam_);
     double tuneRatio = std::pow (2.0, (coarseTune * 100.0 + fineTune) / 1200.0);
-    double freq = currentFreq_ * tuneRatio;
+    double freq = baseFreq * tuneRatio;
 
     // --- Section 1: FM LFO ---
     double fmRate = static_cast<double> (*fmRateParam_);
@@ -219,13 +234,22 @@ double HarmonicEngine::renderSample()
 
 void HarmonicEngine::handleNoteOn (int midiNote, float velocity)
 {
-    currentFreq_ = juce::MidiMessage::getMidiNoteInHertz (midiNote);
-    currentVelocity_ = velocity;
+    gateCount_++;
     gateOpen_ = true;
+    targetNote_ = midiNote;
+    currentVelocity_ = static_cast<double> (velocity);
+
+    // First note: set glide position immediately (no slide from default)
+    if (!hasPlayedNote_)
+    {
+        glidedNote_ = static_cast<double> (midiNote);
+        hasPlayedNote_ = true;
+    }
+    // Subsequent notes: glidedNote_ slides toward targetNote_ in renderSample
 }
 
 void HarmonicEngine::handleNoteOff (int /*midiNote*/)
 {
-    // Simple: any note-off closes gate (proper gate counting in Phase 3)
-    gateOpen_ = false;
+    gateCount_ = std::max (0, gateCount_ - 1);
+    gateOpen_ = (gateCount_ > 0);
 }
