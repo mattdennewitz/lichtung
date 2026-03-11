@@ -48,10 +48,10 @@
 
 ### Plugin Format
 
-- [ ] **FMT-01**: VST3 format
-- [ ] **FMT-02**: AU format
+- [x] **FMT-01**: VST3 format
+- [x] **FMT-02**: AU format
 - [ ] **FMT-03**: macOS universal binary (Apple Silicon + Intel)
-- [ ] **FMT-04**: Plugin state save/restore via APVTS
+- [x] **FMT-04**: Plugin state save/restore via APVTS
 
 ## v2 Requirements
 
@@ -101,10 +101,10 @@ None — scope is deliberately bounded to the Verbos module translation.
 | GUI-03 | Phase 4 | Pending |
 | GUI-04 | Phase 4 | Pending |
 | GUI-05 | Phase 4 | Pending |
-| FMT-01 | Phase 1 | Pending |
-| FMT-02 | Phase 1 | Pending |
+| FMT-01 | Phase 1 | Complete |
+| FMT-02 | Phase 1 | Complete |
 | FMT-03 | Phase 5 | Pending |
-| FMT-04 | Phase 1 | Pending |
+| FMT-04 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 30 total

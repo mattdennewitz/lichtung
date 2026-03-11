@@ -28,10 +28,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. Plugin loads in a DAW (e.g., REAPER or Ableton) as both VST3 and AU without errors
   2. All synth parameters appear in the DAW's generic parameter UI and can be automated
   3. Plugin state saves and restores correctly when reopening a DAW project
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 01-01: TBD
+- [ ] 01-01-PLAN.md — CMake build system, APVTS parameter registration, state save/restore, build all targets
 
 ### Phase 2: Waveform Engine
 **Goal**: All four waveform outputs (harmonic mix, saw, square, triangle) are playable via MIDI with correct pitch tracking and clean output
@@ -97,7 +97,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Plugin Shell | 0/? | Not started | - |
+| 1. Plugin Shell | 0/1 | Planned | - |
 | 2. Waveform Engine | 0/? | Not started | - |
 | 3. Modulation and Performance | 0/? | Not started | - |
 | 4. Custom GUI | 0/? | Not started | - |

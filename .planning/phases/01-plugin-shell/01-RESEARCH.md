@@ -116,7 +116,7 @@ juce_add_plugin(HarmonicOscillator
     IS_MIDI_EFFECT FALSE
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE
     COPY_PLUGIN_AFTER_BUILD TRUE
-    PLUGIN_MANUFACTURER_CODE Dste
+    PLUGIN_MANUFACTURER_CODE DsEr
     PLUGIN_CODE Hrmo
     FORMATS AU VST3 Standalone
     PRODUCT_NAME "Harmonic Oscillator"
@@ -147,7 +147,7 @@ target_link_libraries(HarmonicOscillator
 ```
 
 **Notes on IDs:**
-- `PLUGIN_MANUFACTURER_CODE`: "Dste" -- 4 chars, at least one uppercase, derived from "Die stille Erde"
+- `PLUGIN_MANUFACTURER_CODE`: "DsEr" -- 4 chars, matches existing "Die stille Erde" plugins (three-sisters, multi-tap-delay)
 - `PLUGIN_CODE`: "Hrmo" -- 4 chars, exactly one uppercase (first letter), derived from "Harmonic Oscillator". GarageBand requires first letter uppercase, rest lowercase.
 
 ### Pattern 2: APVTS Parameter Registration with createParameterLayout
