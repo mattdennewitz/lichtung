@@ -1,4 +1,5 @@
 #include "PluginProcessor.h"
+#include "PluginEditor.h"
 
 PluginProcessor::PluginProcessor()
     : AudioProcessor (BusesProperties()
@@ -176,7 +177,7 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
 {
-    return new juce::GenericAudioProcessorEditor (*this);
+    return new PluginEditor (*this);
 }
 
 void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
