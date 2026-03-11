@@ -126,8 +126,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
     return layout;
 }
 
-void PluginProcessor::prepareToPlay (double /*sampleRate*/, int /*samplesPerBlock*/)
+void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    engine_.prepare (sampleRate, samplesPerBlock, apvts);
 }
 
 void PluginProcessor::releaseResources()
@@ -135,10 +136,42 @@ void PluginProcessor::releaseResources()
 }
 
 void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
-                                     juce::MidiBuffer& /*midiMessages*/)
+                                     juce::MidiBuffer& midiMessages)
 {
-    // Phase 1: no DSP -- silence output
+    juce::ScopedNoDenormals noDenormals;
     buffer.clear();
+
+    auto* leftChannel = buffer.getWritePointer (0);
+    auto* rightChannel = buffer.getWritePointer (1);
+
+    int currentSample = 0;
+
+    for (const auto metadata : midiMessages)
+    {
+        // Render samples up to this MIDI event
+        for (int s = currentSample; s < metadata.samplePosition; ++s)
+        {
+            float sample = static_cast<float> (engine_.renderSample());
+            leftChannel[s] = sample;
+            rightChannel[s] = sample;
+        }
+        currentSample = metadata.samplePosition;
+
+        // Handle MIDI event
+        auto msg = metadata.getMessage();
+        if (msg.isNoteOn())
+            engine_.handleNoteOn (msg.getNoteNumber(), msg.getFloatVelocity());
+        else if (msg.isNoteOff())
+            engine_.handleNoteOff (msg.getNoteNumber());
+    }
+
+    // Render remaining samples after last MIDI event
+    for (int s = currentSample; s < buffer.getNumSamples(); ++s)
+    {
+        float sample = static_cast<float> (engine_.renderSample());
+        leftChannel[s] = sample;
+        rightChannel[s] = sample;
+    }
 }
 
 juce::AudioProcessorEditor* PluginProcessor::createEditor()

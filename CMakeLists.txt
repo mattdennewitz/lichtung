@@ -31,6 +31,7 @@ juce_add_plugin(HarmonicOscillator
 target_sources(HarmonicOscillator
     PRIVATE
         src/PluginProcessor.cpp
+        src/dsp/HarmonicEngine.cpp
 )
 
 target_compile_definitions(HarmonicOscillator
