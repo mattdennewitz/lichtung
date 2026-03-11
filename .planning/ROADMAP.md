@@ -74,10 +74,11 @@ Plans:
   2. Eight vertical faders control harmonic levels with immediate audible response
   3. All rotary knobs (scan, tilt, FM, envelope, tuning) control their parameters and reflect current values
   4. Output mode selector switches between Harmonic Mix, Triangle, Saw, Square
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md — CustomLookAndFeel + PluginEditor with 5-section layout, all controls/attachments, CMake wiring, build
+- [ ] 04-02-PLAN.md — Visual verification checkpoint (human confirms GUI appearance and interaction)
 
 ### Phase 5: Validation and Universal Build
 **Goal**: Plugin passes format validation, builds as universal binary, and DSP output matches the Max/MSP reference implementation
