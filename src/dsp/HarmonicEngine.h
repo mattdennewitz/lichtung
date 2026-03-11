@@ -1,24 +1,47 @@
 #pragma once
 
-#include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_audio_basics/juce_audio_basics.h>
 #include <array>
 #include <cmath>
 #include <atomic>
+
+// Decoupled parameter interface — no APVTS dependency
+struct EngineParams
+{
+    std::atomic<float>* harmLevels[8] = {};
+    std::atomic<float>* scanCenter = nullptr;
+    std::atomic<float>* scanWidth = nullptr;
+    std::atomic<float>* spectralTilt = nullptr;
+    std::atomic<float>* masterLevel = nullptr;
+    std::atomic<float>* outputSelect = nullptr;
+    std::atomic<float>* coarseTune = nullptr;
+    std::atomic<float>* fineTune = nullptr;
+    std::atomic<float>* linFmDepth = nullptr;
+    std::atomic<float>* expFmDepth = nullptr;
+    std::atomic<float>* fmRate = nullptr;
+    std::atomic<float>* attack = nullptr;
+    std::atomic<float>* release = nullptr;
+    std::atomic<float>* glide = nullptr;
+};
 
 class HarmonicEngine
 {
 public:
     HarmonicEngine() = default;
 
-    void prepare (double sampleRate, int maxBlockSize,
-                  juce::AudioProcessorValueTreeState& apvts);
+    void prepare (double sampleRate, int maxBlockSize, const EngineParams& params);
 
     double renderSample();
 
     void handleNoteOn (int midiNote, float velocity);
     void handleNoteOff (int midiNote);
+    void handlePitchBend (int pitchWheelValue);
 
 private:
+    // Control-rate downsampling (expensive math every N samples)
+    static constexpr int kControlRate = 32;
+    int controlCounter_ = 0;
+
     // Sample rate
     double sampleRate_ = 44100.0;
     double inverseSampleRate_ = 1.0 / 44100.0;
@@ -31,6 +54,7 @@ private:
 
     // Triangle wave leaky integrator state
     double triIntegrator_ = 0.0;
+    double triLeak_ = 0.999;
 
     // DC blocker state
     double dcX1_ = 0.0;
@@ -43,8 +67,11 @@ private:
     // Tilt multiplier per harmonic
     std::array<double, 8> tiltFactors_ = {};
 
+    // Cached envelope coefficients (recomputed at control rate)
+    double attackCoeff_ = 0.0;
+    double releaseCoeff_ = 0.0;
+
     // Note state
-    double currentFreq_ = 440.0;
     double currentVelocity_ = 0.0;
     bool gateOpen_ = false;
 
@@ -54,10 +81,13 @@ private:
     double glidedNote_ = 69.0;
     bool hasPlayedNote_ = false;
 
+    // Pitch bend state (standard +/- 2 semitones)
+    double pitchBendSemitones_ = 0.0;
+
     // FM LFO state
     double fmPhase_ = 0.0;
 
-    // AR envelope level (replaces 5ms gate ramp)
+    // AR envelope level
     double envLevel_ = 0.0;
 
     // Smoothed parameter values
@@ -74,21 +104,6 @@ private:
     juce::SmoothedValue<float> glideSmoothed_;
     juce::SmoothedValue<float> fineTuneSmoothed_;
 
-    // Cached APVTS parameter pointers
-    std::array<std::atomic<float>*, 8> harmLevelParams_ = {};
-    std::atomic<float>* scanCenterParam_ = nullptr;
-    std::atomic<float>* scanWidthParam_ = nullptr;
-    std::atomic<float>* spectralTiltParam_ = nullptr;
-    std::atomic<float>* masterLevelParam_ = nullptr;
-    std::atomic<float>* outputSelectParam_ = nullptr;
-
-    // Phase 3: FM, tuning, AR envelope parameter pointers
-    std::atomic<float>* coarseTuneParam_ = nullptr;
-    std::atomic<float>* fineTuneParam_ = nullptr;
-    std::atomic<float>* linFmDepthParam_ = nullptr;
-    std::atomic<float>* expFmDepthParam_ = nullptr;
-    std::atomic<float>* fmRateParam_ = nullptr;
-    std::atomic<float>* attackParam_ = nullptr;
-    std::atomic<float>* releaseParam_ = nullptr;
-    std::atomic<float>* glideParam_ = nullptr;
+    // Decoupled parameter pointers
+    EngineParams params_;
 };

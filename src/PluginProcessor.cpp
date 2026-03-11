@@ -140,7 +140,27 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    engine_.prepare (sampleRate, samplesPerBlock, apvts);
+    juce::AudioProcessor::prepareToPlay (sampleRate, samplesPerBlock);
+
+    // Bridge APVTS to decoupled EngineParams
+    for (int i = 0; i < 8; ++i)
+        engineParams_.harmLevels[i] = apvts.getRawParameterValue ("harm_" + juce::String (i + 1));
+
+    engineParams_.scanCenter    = apvts.getRawParameterValue ("scan_center");
+    engineParams_.scanWidth     = apvts.getRawParameterValue ("scan_width");
+    engineParams_.spectralTilt  = apvts.getRawParameterValue ("spectral_tilt");
+    engineParams_.masterLevel   = apvts.getRawParameterValue ("master_level");
+    engineParams_.outputSelect  = apvts.getRawParameterValue ("output_select");
+    engineParams_.coarseTune    = apvts.getRawParameterValue ("coarse_tune");
+    engineParams_.fineTune      = apvts.getRawParameterValue ("fine_tune");
+    engineParams_.linFmDepth    = apvts.getRawParameterValue ("lin_fm_depth");
+    engineParams_.expFmDepth    = apvts.getRawParameterValue ("exp_fm_depth");
+    engineParams_.fmRate        = apvts.getRawParameterValue ("fm_rate");
+    engineParams_.attack        = apvts.getRawParameterValue ("attack");
+    engineParams_.release       = apvts.getRawParameterValue ("release");
+    engineParams_.glide         = apvts.getRawParameterValue ("glide");
+
+    engine_.prepare (sampleRate, samplesPerBlock, engineParams_);
 }
 
 void PluginProcessor::releaseResources()
@@ -177,6 +197,8 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
             engine_.handleNoteOn (msg.getNoteNumber(), msg.getFloatVelocity());
         else if (msg.isNoteOff())
             engine_.handleNoteOff (msg.getNoteNumber());
+        else if (msg.isPitchWheel())
+            engine_.handlePitchBend (msg.getPitchWheelValue());
     }
 
     // Render remaining samples after last MIDI event
@@ -196,7 +218,16 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor()
 
 void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    auto state = apvts.copyState();
+    juce::ValueTree state ("LichtungState");
+    state.setProperty ("version", 1, nullptr);
+
+    state.appendChild (apvts.copyState(), nullptr);
+
+    juce::ValueTree uiState ("UIState");
+    uiState.setProperty ("width", lastUIWidth, nullptr);
+    uiState.setProperty ("height", lastUIHeight, nullptr);
+    state.appendChild (uiState, nullptr);
+
     std::unique_ptr<juce::XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -204,10 +235,30 @@ void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)
 void PluginProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    if (xmlState == nullptr)
+        return;
 
-    if (xmlState != nullptr)
-        if (xmlState->hasTagName (apvts.state.getType()))
-            apvts.replaceState (juce::ValueTree::fromXml (*xmlState));
+    // Versioned format (v1+)
+    if (xmlState->hasTagName ("LichtungState"))
+    {
+        juce::ValueTree state = juce::ValueTree::fromXml (*xmlState);
+
+        auto paramState = state.getChildWithName (apvts.state.getType());
+        if (paramState.isValid())
+            apvts.replaceState (paramState);
+
+        auto uiState = state.getChildWithName ("UIState");
+        if (uiState.isValid())
+        {
+            lastUIWidth  = uiState.getProperty ("width", 700);
+            lastUIHeight = uiState.getProperty ("height", 450);
+        }
+    }
+    // Legacy format (pre-v1): bare APVTS state
+    else if (xmlState->hasTagName (apvts.state.getType()))
+    {
+        apvts.replaceState (juce::ValueTree::fromXml (*xmlState));
+    }
 }
 
 // This creates new instances of the plugin

@@ -54,3 +54,43 @@ target_link_libraries(Lichtung
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
+
+# --- Tests ---
+option(LICHTUNG_BUILD_TESTS "Build unit tests" OFF)
+
+if(LICHTUNG_BUILD_TESTS)
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG        v3.5.2
+        GIT_SHALLOW    TRUE
+    )
+    FetchContent_MakeAvailable(Catch2)
+
+    juce_add_console_app(LichtungTests
+        PRODUCT_NAME "Lichtung Tests"
+    )
+
+    target_sources(LichtungTests
+        PRIVATE
+            tests/HarmonicEngineTests.cpp
+            src/dsp/HarmonicEngine.cpp
+    )
+
+    target_include_directories(LichtungTests PRIVATE src)
+
+    target_compile_definitions(LichtungTests
+        PRIVATE
+            JUCE_WEB_BROWSER=0
+            JUCE_USE_CURL=0
+    )
+
+    target_link_libraries(LichtungTests
+        PRIVATE
+            juce::juce_audio_basics
+            Catch2::Catch2WithMain
+    )
+
+    enable_testing()
+    add_test(NAME LichtungTests COMMAND LichtungTests)
+endif()
