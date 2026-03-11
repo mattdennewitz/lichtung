@@ -59,10 +59,11 @@ Plans:
   3. Coarse tuning shifts pitch in semitone steps and fine tuning shifts in cents, both audibly correct
   4. Portamento produces smooth pitch glide between notes at adjustable speed
   5. Moving any continuous parameter (knobs, faders) produces no zipper noise or clicks (parameter smoothing active)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md — FM synthesis (linear + exponential), coarse/fine tuning, AR envelope, DC blocker reorder
+- [ ] 03-02-PLAN.md — Legato gate counting, portamento/glide, parameter smoothing for all continuous params
 
 ### Phase 4: Custom GUI
 **Goal**: A custom plugin editor with the 5-section layout matching the Max patch, replacing the generic parameter UI
