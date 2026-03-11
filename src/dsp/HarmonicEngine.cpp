@@ -9,10 +9,6 @@ void HarmonicEngine::prepare (double sampleRate, int /*maxBlockSize*/,
     // DC blocker coefficient (5Hz cutoff)
     dcR_ = 1.0 - (juce::MathConstants<double>::twoPi * 5.0 * inverseSampleRate_);
 
-    // Gate ramp coefficients for 5ms anti-click
-    gateAttackCoeff_ = 1.0 / (0.005 * sampleRate);
-    gateReleaseCoeff_ = 1.0 / (0.005 * sampleRate);
-
     // Reset all state
     phase_ = 0.0;
     harmPhases_.fill (0.0);
@@ -22,7 +18,8 @@ void HarmonicEngine::prepare (double sampleRate, int /*maxBlockSize*/,
     scanEnv_.fill (1.0);
     tiltFactors_.fill (1.0);
     gateOpen_ = false;
-    gateLevel_ = 0.0;
+    fmPhase_ = 0.0;
+    envLevel_ = 0.0;
     currentFreq_ = 440.0;
     currentVelocity_ = 0.0;
 
@@ -47,12 +44,48 @@ void HarmonicEngine::prepare (double sampleRate, int /*maxBlockSize*/,
     spectralTiltParam_ = apvts.getRawParameterValue ("spectral_tilt");
     masterLevelParam_ = apvts.getRawParameterValue ("master_level");
     outputSelectParam_ = apvts.getRawParameterValue ("output_select");
+
+    // Phase 3: FM, tuning, AR envelope parameters
+    coarseTuneParam_ = apvts.getRawParameterValue ("coarse_tune");
+    fineTuneParam_ = apvts.getRawParameterValue ("fine_tune");
+    linFmDepthParam_ = apvts.getRawParameterValue ("lin_fm_depth");
+    expFmDepthParam_ = apvts.getRawParameterValue ("exp_fm_depth");
+    fmRateParam_ = apvts.getRawParameterValue ("fm_rate");
+    attackParam_ = apvts.getRawParameterValue ("attack");
+    releaseParam_ = apvts.getRawParameterValue ("release");
 }
 
 double HarmonicEngine::renderSample()
 {
+    // --- Section 1: Tuning (gen~ section 1) ---
+    double coarseTune = static_cast<double> (*coarseTuneParam_);
+    double fineTune = static_cast<double> (*fineTuneParam_);
+    double tuneRatio = std::pow (2.0, (coarseTune * 100.0 + fineTune) / 1200.0);
+    double freq = currentFreq_ * tuneRatio;
+
+    // --- Section 1: FM LFO ---
+    double fmRate = static_cast<double> (*fmRateParam_);
+    double fmInc = fmRate * inverseSampleRate_;
+    double fmP = fmPhase_ + fmInc;
+    fmP -= std::floor (fmP);
+    fmPhase_ = fmP;
+    double fmLfo = std::sin (fmP * juce::MathConstants<double>::twoPi);
+
+    // --- Section 1: Linear FM (additive: Hz offset proportional to carrier) ---
+    double linFmDepth = static_cast<double> (*linFmDepthParam_);
+    double linFmAmount = linFmDepth * freq * fmLfo;
+
+    // --- Section 1: Exponential FM (multiplicative: pitch scaling) ---
+    double expFmDepth = static_cast<double> (*expFmDepthParam_);
+    double expFmAmount = std::pow (2.0, expFmDepth * fmLfo);
+
+    // --- Section 1: Combine FM and clamp ---
+    freq = freq * expFmAmount + linFmAmount;
+    double nyquist = sampleRate_ * 0.5;
+    freq = std::clamp (freq, 0.01, nyquist * 0.98);
+
     // --- Section 2: Master phase accumulator ---
-    double phaseInc = currentFreq_ * inverseSampleRate_;
+    double phaseInc = freq * inverseSampleRate_;
     double p = phase_ + phaseInc;
     p -= std::floor (p);
     phase_ = p;
@@ -123,7 +156,6 @@ double HarmonicEngine::renderSample()
 
     // --- Section 6: 8-harmonic sine bank with per-harmonic phase accumulators ---
     double harmonicMix = 0.0;
-    double nyquist = sampleRate_ * 0.5;
     for (int i = 0; i < 8; ++i)
     {
         // Update SmoothedValue target from APVTS
@@ -131,7 +163,7 @@ double HarmonicEngine::renderSample()
         double fader = static_cast<double> (harmLevelSmoothed_[i].getNextValue());
 
         int harmNum = i + 1;
-        double harmFreq = currentFreq_ * harmNum;
+        double harmFreq = freq * harmNum;
         if (harmFreq < nyquist)
         {
             double hPhase = harmPhases_[i] + harmFreq * inverseSampleRate_;
@@ -147,37 +179,42 @@ double HarmonicEngine::renderSample()
     }
     harmonicMix *= 0.25;  // Normalization factor from gen~
 
-    // --- Section 8: DC blocker (5Hz highpass) ---
-    double mixDC = harmonicMix - dcX1_ + dcR_ * dcY1_;
-    dcX1_ = harmonicMix;
-    dcY1_ = mixDC;
+    // --- Section 7: AR envelope (replaces 5ms gate ramp) ---
+    double attackMs = static_cast<double> (*attackParam_);
+    double releaseMs = static_cast<double> (*releaseParam_);
+    double attackCoeff = std::exp (-1.0 / (std::max (1.0, attackMs) * 0.001 * sampleRate_));
+    double releaseCoeff = std::exp (-1.0 / (std::max (1.0, releaseMs) * 0.001 * sampleRate_));
 
-    // --- Section 9: Gate, master level, output selector ---
+    double envTarget = gateOpen_ ? currentVelocity_ : 0.0;
+    double envCoeff = gateOpen_ ? attackCoeff : releaseCoeff;
+    envLevel_ = envTarget + envCoeff * (envLevel_ - envTarget);
 
-    // 5ms anti-click gate ramp
-    double gateTarget = gateOpen_ ? 1.0 : 0.0;
-    if (gateLevel_ < gateTarget)
-        gateLevel_ = std::min (gateLevel_ + gateAttackCoeff_, gateTarget);
-    else if (gateLevel_ > gateTarget)
-        gateLevel_ = std::max (gateLevel_ - gateReleaseCoeff_, gateTarget);
-
-    double env = gateLevel_ * currentVelocity_;
-
-    // Smoothed master level
+    // --- Section 9: Output with corrected DC blocker order ---
     masterLevelSmoothed_.setTargetValue (*masterLevelParam_);
     double masterLvl = static_cast<double> (masterLevelSmoothed_.getNextValue());
+
+    // Apply envelope and master level
+    double rawMix = harmonicMix * envLevel_ * masterLvl;
+    double rawTri = triOut * envLevel_ * masterLvl;
+    double rawSaw = sawOut * envLevel_ * masterLvl;
+    double rawSqr = sqrOut * envLevel_ * masterLvl;
+
+    // DC blocker on mix only AFTER envelope (matching gen~)
+    double mixDC = rawMix - dcX1_ + dcR_ * dcY1_;
+    dcX1_ = rawMix;
+    dcY1_ = mixDC;
 
     int outputMode = static_cast<int> (*outputSelectParam_);
     double selected;
     switch (outputMode)
     {
         case 0:  selected = mixDC;   break;
-        case 1:  selected = triOut;  break;
-        case 2:  selected = sawOut;  break;
-        case 3:  selected = sqrOut;  break;
+        case 1:  selected = rawTri;  break;
+        case 2:  selected = rawSaw;  break;
+        case 3:  selected = rawSqr;  break;
         default: selected = mixDC;   break;
     }
-    return selected * env * masterLvl;
+    return selected;
 }
 
 void HarmonicEngine::handleNoteOn (int midiNote, float velocity)

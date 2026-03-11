@@ -48,10 +48,11 @@ private:
     double currentVelocity_ = 0.0;
     bool gateOpen_ = false;
 
-    // 5ms anti-click gate ramp
-    double gateLevel_ = 0.0;
-    double gateAttackCoeff_ = 0.0;
-    double gateReleaseCoeff_ = 0.0;
+    // FM LFO state
+    double fmPhase_ = 0.0;
+
+    // AR envelope level (replaces 5ms gate ramp)
+    double envLevel_ = 0.0;
 
     // Smoothed parameter values
     juce::SmoothedValue<float> masterLevelSmoothed_;
@@ -64,4 +65,13 @@ private:
     std::atomic<float>* spectralTiltParam_ = nullptr;
     std::atomic<float>* masterLevelParam_ = nullptr;
     std::atomic<float>* outputSelectParam_ = nullptr;
+
+    // Phase 3: FM, tuning, AR envelope parameter pointers
+    std::atomic<float>* coarseTuneParam_ = nullptr;
+    std::atomic<float>* fineTuneParam_ = nullptr;
+    std::atomic<float>* linFmDepthParam_ = nullptr;
+    std::atomic<float>* expFmDepthParam_ = nullptr;
+    std::atomic<float>* fmRateParam_ = nullptr;
+    std::atomic<float>* attackParam_ = nullptr;
+    std::atomic<float>* releaseParam_ = nullptr;
 };
