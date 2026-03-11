@@ -7,19 +7,19 @@
 
 ### DSP Core
 
-- [ ] **DSP-01**: 8-harmonic sine bank with individual level controls (0-1 per harmonic)
-- [ ] **DSP-02**: Scan envelope (Gaussian window) with center (0-1) and width (0-1) parameters
-- [ ] **DSP-03**: Spectral tilt (linear-in-dB slope, +/-24dB range across harmonics)
-- [ ] **DSP-04**: DC blocker on harmonic mix output (~5Hz highpass)
-- [ ] **DSP-05**: Anti-aliasing — skip harmonics above Nyquist
-- [ ] **DSP-06**: Double-precision phase accumulator to prevent pitch drift
+- [x] **DSP-01**: 8-harmonic sine bank with individual level controls (0-1 per harmonic)
+- [x] **DSP-02**: Scan envelope (Gaussian window) with center (0-1) and width (0-1) parameters
+- [x] **DSP-03**: Spectral tilt (linear-in-dB slope, +/-24dB range across harmonics)
+- [x] **DSP-04**: DC blocker on harmonic mix output (~5Hz highpass)
+- [x] **DSP-05**: Anti-aliasing — skip harmonics above Nyquist
+- [x] **DSP-06**: Double-precision phase accumulator to prevent pitch drift
 
 ### Waveforms
 
-- [ ] **WAVE-01**: PolyBLEP sawtooth waveform
-- [ ] **WAVE-02**: PolyBLEP square waveform
-- [ ] **WAVE-03**: Triangle waveform via leaky integrated square
-- [ ] **WAVE-04**: Output selector — hard switch between Harmonic Mix, Triangle, Saw, Square
+- [x] **WAVE-01**: PolyBLEP sawtooth waveform
+- [x] **WAVE-02**: PolyBLEP square waveform
+- [x] **WAVE-03**: Triangle waveform via leaky integrated square
+- [x] **WAVE-04**: Output selector — hard switch between Harmonic Mix, Triangle, Saw, Square
 
 ### FM
 
@@ -35,7 +35,7 @@
 - [ ] **PERF-04**: AR envelope (attack 1-2000ms, release 1-5000ms, exponential curves)
 - [ ] **PERF-05**: Monophonic with legato (gate counting, no retrigger on overlapping notes)
 - [ ] **PERF-06**: MIDI note input with velocity sensitivity
-- [ ] **PERF-07**: Master level control (0-1)
+- [x] **PERF-07**: Master level control (0-1)
 - [ ] **PERF-08**: Parameter smoothing on all continuously-variable parameters
 
 ### GUI
@@ -75,16 +75,16 @@ None — scope is deliberately bounded to the Verbos module translation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DSP-01 | Phase 2 | Pending |
-| DSP-02 | Phase 2 | Pending |
-| DSP-03 | Phase 2 | Pending |
-| DSP-04 | Phase 2 | Pending |
-| DSP-05 | Phase 2 | Pending |
-| DSP-06 | Phase 2 | Pending |
-| WAVE-01 | Phase 2 | Pending |
-| WAVE-02 | Phase 2 | Pending |
-| WAVE-03 | Phase 2 | Pending |
-| WAVE-04 | Phase 2 | Pending |
+| DSP-01 | Phase 2 | Complete |
+| DSP-02 | Phase 2 | Complete |
+| DSP-03 | Phase 2 | Complete |
+| DSP-04 | Phase 2 | Complete |
+| DSP-05 | Phase 2 | Complete |
+| DSP-06 | Phase 2 | Complete |
+| WAVE-01 | Phase 2 | Complete |
+| WAVE-02 | Phase 2 | Complete |
+| WAVE-03 | Phase 2 | Complete |
+| WAVE-04 | Phase 2 | Complete |
 | FM-01 | Phase 3 | Pending |
 | FM-02 | Phase 3 | Pending |
 | FM-03 | Phase 3 | Pending |
@@ -94,7 +94,7 @@ None — scope is deliberately bounded to the Verbos module translation.
 | PERF-04 | Phase 3 | Pending |
 | PERF-05 | Phase 3 | Pending |
 | PERF-06 | Phase 2 | Pending |
-| PERF-07 | Phase 2 | Pending |
+| PERF-07 | Phase 2 | Complete |
 | PERF-08 | Phase 3 | Pending |
 | GUI-01 | Phase 4 | Pending |
 | GUI-02 | Phase 4 | Pending |
