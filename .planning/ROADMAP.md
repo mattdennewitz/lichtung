@@ -88,10 +88,10 @@ Plans:
   1. Plugin builds as macOS universal binary (runs natively on both Apple Silicon and Intel)
   2. pluginval passes with no errors for both VST3 and AU formats
   3. A/B comparison against the Max/MSP gen~ patch confirms matching behavior for harmonic mix, scan, tilt, and PolyBLEP waveforms at standard sample rates (44.1k, 48k, 96k)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 05-01: TBD
+- [ ] 05-01-PLAN.md — Universal binary build config, pluginval/auval validation, A/B comparison checkpoint
 
 ## Progress
 
@@ -104,4 +104,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Waveform Engine | 0/2 | Planned | - |
 | 3. Modulation and Performance | 0/? | Not started | - |
 | 4. Custom GUI | 0/? | Not started | - |
-| 5. Validation and Universal Build | 0/? | Not started | - |
+| 5. Validation and Universal Build | 0/1 | Planned | - |
