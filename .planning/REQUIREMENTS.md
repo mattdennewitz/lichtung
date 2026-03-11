@@ -75,42 +75,42 @@ None — scope is deliberately bounded to the Verbos module translation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DSP-01 | TBD | Pending |
-| DSP-02 | TBD | Pending |
-| DSP-03 | TBD | Pending |
-| DSP-04 | TBD | Pending |
-| DSP-05 | TBD | Pending |
-| DSP-06 | TBD | Pending |
-| WAVE-01 | TBD | Pending |
-| WAVE-02 | TBD | Pending |
-| WAVE-03 | TBD | Pending |
-| WAVE-04 | TBD | Pending |
-| FM-01 | TBD | Pending |
-| FM-02 | TBD | Pending |
-| FM-03 | TBD | Pending |
-| PERF-01 | TBD | Pending |
-| PERF-02 | TBD | Pending |
-| PERF-03 | TBD | Pending |
-| PERF-04 | TBD | Pending |
-| PERF-05 | TBD | Pending |
-| PERF-06 | TBD | Pending |
-| PERF-07 | TBD | Pending |
-| PERF-08 | TBD | Pending |
-| GUI-01 | TBD | Pending |
-| GUI-02 | TBD | Pending |
-| GUI-03 | TBD | Pending |
-| GUI-04 | TBD | Pending |
-| GUI-05 | TBD | Pending |
-| FMT-01 | TBD | Pending |
-| FMT-02 | TBD | Pending |
-| FMT-03 | TBD | Pending |
-| FMT-04 | TBD | Pending |
+| DSP-01 | Phase 2 | Pending |
+| DSP-02 | Phase 2 | Pending |
+| DSP-03 | Phase 2 | Pending |
+| DSP-04 | Phase 2 | Pending |
+| DSP-05 | Phase 2 | Pending |
+| DSP-06 | Phase 2 | Pending |
+| WAVE-01 | Phase 2 | Pending |
+| WAVE-02 | Phase 2 | Pending |
+| WAVE-03 | Phase 2 | Pending |
+| WAVE-04 | Phase 2 | Pending |
+| FM-01 | Phase 3 | Pending |
+| FM-02 | Phase 3 | Pending |
+| FM-03 | Phase 3 | Pending |
+| PERF-01 | Phase 3 | Pending |
+| PERF-02 | Phase 3 | Pending |
+| PERF-03 | Phase 3 | Pending |
+| PERF-04 | Phase 3 | Pending |
+| PERF-05 | Phase 3 | Pending |
+| PERF-06 | Phase 2 | Pending |
+| PERF-07 | Phase 2 | Pending |
+| PERF-08 | Phase 3 | Pending |
+| GUI-01 | Phase 4 | Pending |
+| GUI-02 | Phase 4 | Pending |
+| GUI-03 | Phase 4 | Pending |
+| GUI-04 | Phase 4 | Pending |
+| GUI-05 | Phase 4 | Pending |
+| FMT-01 | Phase 1 | Pending |
+| FMT-02 | Phase 1 | Pending |
+| FMT-03 | Phase 5 | Pending |
+| FMT-04 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 30 total
-- Mapped to phases: 0
-- Unmapped: 30
+- Mapped to phases: 30
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-10*
-*Last updated: 2026-03-10 after initial definition*
+*Last updated: 2026-03-10 after roadmap creation*
