@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-11T03:06:34.974Z"
+status: in-progress
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-11T03:41:42Z"
 progress:
-  total_phases: 2
+  total_phases: 3
   completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 4
+  completed_plans: 4
 ---
 
 # Project State
@@ -19,23 +19,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-10)
 
 **Core value:** 8-harmonic additive synthesis engine with scan and tilt that matches the Max/MSP gen~ codebox
-**Current focus:** Phase 2: Waveform Engine
+**Current focus:** Phase 3: Modulation and Performance
 
 ## Current Position
 
-Phase: 2 of 5 (Waveform Engine) -- COMPLETE
-Plan: 2 of 2 in current phase (all complete)
-Status: Phase 2 complete, ready for Phase 3
-Last activity: 2026-03-11 -- HarmonicEngine wired into PluginProcessor
+Phase: 3 of 5 (Modulation and Performance)
+Plan: 1 of 2 in current phase (03-01 complete)
+Status: Phase 3 in progress
+Last activity: 2026-03-11 -- FM, tuning, and AR envelope added to HarmonicEngine
 
-Progress: [██████████] 100% (Phase 2)
+Progress: [█████████░] 50% (Phase 3)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 3min
-- Total execution time: 0.1 hours
+- Total execution time: 0.2 hours
 
 **By Phase:**
 
@@ -43,9 +43,10 @@ Progress: [██████████] 100% (Phase 2)
 |-------|-------|-------|----------|
 | 01-plugin-shell | 1 | 4min | 4min |
 | 02-waveform-engine | 2 | 4min | 2min |
+| 03-modulation-and-performance | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4min), 02-01 (2min), 02-02 (2min)
+- Last 5 plans: 01-01 (4min), 02-01 (2min), 02-02 (2min), 03-01 (2min)
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -66,6 +67,9 @@ Recent decisions affecting current work:
 - [02-01]: 5ms anti-click gate ramp (not hard gate, not full AR envelope)
 - [02-01]: Scan and tilt computed per-sample to match gen~ reference exactly
 - [02-02]: Mono engine output duplicated to both stereo channels
+- [03-01]: AR envelope uses single-pole exponential follower matching gen~ section 7
+- [03-01]: DC blocker moved after envelope to match gen~ signal flow order
+- [03-01]: Envelope target incorporates velocity directly
 
 ### Pending Todos
 
@@ -84,7 +88,7 @@ Resume file: None
 
 ## Last Session
 
-**Stopped at:** Completed 02-02-PLAN.md
-**Resume with:** Plan Phase 3 (modulation matrix)
-**Resume file:** .planning/phases/02-waveform-engine/02-02-SUMMARY.md
+**Stopped at:** Completed 03-01-PLAN.md
+**Resume with:** Plan 03-02 (remaining modulation/performance)
+**Resume file:** .planning/phases/03-modulation-and-performance/03-01-SUMMARY.md
 **Date:** 2026-03-11

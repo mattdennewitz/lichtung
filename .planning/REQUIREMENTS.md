@@ -23,16 +23,16 @@
 
 ### FM
 
-- [ ] **FM-01**: Linear FM with internal sine LFO
-- [ ] **FM-02**: Exponential FM with internal sine LFO
-- [ ] **FM-03**: FM LFO rate control (0.1Hz to audio rate ~20kHz)
+- [x] **FM-01**: Linear FM with internal sine LFO
+- [x] **FM-02**: Exponential FM with internal sine LFO
+- [x] **FM-03**: FM LFO rate control (0.1Hz to audio rate ~20kHz)
 
 ### Pitch & Performance
 
-- [ ] **PERF-01**: Coarse tuning (+/-24 semitones)
-- [ ] **PERF-02**: Fine tuning (+/-100 cents)
+- [x] **PERF-01**: Coarse tuning (+/-24 semitones)
+- [x] **PERF-02**: Fine tuning (+/-100 cents)
 - [ ] **PERF-03**: Portamento/glide (0-2000ms)
-- [ ] **PERF-04**: AR envelope (attack 1-2000ms, release 1-5000ms, exponential curves)
+- [x] **PERF-04**: AR envelope (attack 1-2000ms, release 1-5000ms, exponential curves)
 - [ ] **PERF-05**: Monophonic with legato (gate counting, no retrigger on overlapping notes)
 - [x] **PERF-06**: MIDI note input with velocity sensitivity
 - [x] **PERF-07**: Master level control (0-1)
@@ -85,13 +85,13 @@ None — scope is deliberately bounded to the Verbos module translation.
 | WAVE-02 | Phase 2 | Complete |
 | WAVE-03 | Phase 2 | Complete |
 | WAVE-04 | Phase 2 | Complete |
-| FM-01 | Phase 3 | Pending |
-| FM-02 | Phase 3 | Pending |
-| FM-03 | Phase 3 | Pending |
-| PERF-01 | Phase 3 | Pending |
-| PERF-02 | Phase 3 | Pending |
+| FM-01 | Phase 3 | Complete |
+| FM-02 | Phase 3 | Complete |
+| FM-03 | Phase 3 | Complete |
+| PERF-01 | Phase 3 | Complete |
+| PERF-02 | Phase 3 | Complete |
 | PERF-03 | Phase 3 | Pending |
-| PERF-04 | Phase 3 | Pending |
+| PERF-04 | Phase 3 | Complete |
 | PERF-05 | Phase 3 | Pending |
 | PERF-06 | Phase 2 | Complete |
 | PERF-07 | Phase 2 | Complete |
