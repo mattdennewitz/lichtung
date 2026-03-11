@@ -43,10 +43,11 @@ Plans:
   3. Scan (Gaussian window) and tilt controls reshape the harmonic spectrum in real time
   4. PolyBLEP waveforms sound clean (no audible aliasing) across the MIDI note range
   5. No DC offset on the harmonic mix output (DC blocker active)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
+- [ ] 02-01-PLAN.md — HarmonicEngine DSP class: 8-harmonic sine bank, PolyBLEP waveforms, scan/tilt, DC blocker, output selector
+- [ ] 02-02-PLAN.md — Wire HarmonicEngine into PluginProcessor with MIDI handling, build and verify
 
 ### Phase 3: Modulation and Performance
 **Goal**: The synth has its full Verbos character -- FM synthesis, envelope shaping, legato behavior, glide, and tuning controls all work with smooth parameter changes
@@ -97,8 +98,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Plugin Shell | 0/1 | Planned | - |
-| 2. Waveform Engine | 0/? | Not started | - |
+| 1. Plugin Shell | 1/1 | Complete | 2026-03-11 |
+| 2. Waveform Engine | 0/2 | Planned | - |
 | 3. Modulation and Performance | 0/? | Not started | - |
 | 4. Custom GUI | 0/? | Not started | - |
 | 5. Validation and Universal Build | 0/? | Not started | - |
