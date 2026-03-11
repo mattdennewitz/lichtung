@@ -13,6 +13,17 @@ PluginProcessor::~PluginProcessor()
 {
 }
 
+bool PluginProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+{
+    // No input buses expected (synth)
+    if (layouts.getMainInputChannelSet() != juce::AudioChannelSet::disabled())
+        return false;
+
+    const auto& outSet = layouts.getMainOutputChannelSet();
+    return outSet == juce::AudioChannelSet::mono()
+        || outSet == juce::AudioChannelSet::stereo();
+}
+
 juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
@@ -142,8 +153,9 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     juce::ScopedNoDenormals noDenormals;
     buffer.clear();
 
+    const int numChannels = buffer.getNumChannels();
     auto* leftChannel = buffer.getWritePointer (0);
-    auto* rightChannel = buffer.getWritePointer (1);
+    auto* rightChannel = numChannels > 1 ? buffer.getWritePointer (1) : nullptr;
 
     int currentSample = 0;
 
@@ -154,7 +166,8 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         {
             float sample = static_cast<float> (engine_.renderSample());
             leftChannel[s] = sample;
-            rightChannel[s] = sample;
+            if (rightChannel != nullptr)
+                rightChannel[s] = sample;
         }
         currentSample = metadata.samplePosition;
 
@@ -171,7 +184,8 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     {
         float sample = static_cast<float> (engine_.renderSample());
         leftChannel[s] = sample;
-        rightChannel[s] = sample;
+        if (rightChannel != nullptr)
+            rightChannel[s] = sample;
     }
 }
 
