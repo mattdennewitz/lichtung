@@ -4,7 +4,7 @@
 PluginProcessor::PluginProcessor()
     : AudioProcessor (BusesProperties()
           .withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
-      apvts (*this, nullptr, juce::Identifier ("HarmonicOscillatorParams"),
+      apvts (*this, nullptr, juce::Identifier ("LichtungParams"),
              createParameterLayout())
 {
 }

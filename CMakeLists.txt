@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0")
-project(HarmonicOscillator VERSION 0.1.0)
+project(Lichtung VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,7 +15,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(JUCE)
 
-juce_add_plugin(HarmonicOscillator
+juce_add_plugin(Lichtung
     COMPANY_NAME "Die stille Erde"
     IS_SYNTH TRUE
     NEEDS_MIDI_INPUT TRUE
@@ -24,13 +24,13 @@ juce_add_plugin(HarmonicOscillator
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE
     COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE DsEr
-    PLUGIN_CODE Hrmo
-    BUNDLE_ID "com.diestilleerde.harmonicoscillator"
+    PLUGIN_CODE Lcht
+    BUNDLE_ID "com.diestilleerde.lichtung"
     FORMATS AU VST3 Standalone
-    PRODUCT_NAME "Harmonic Oscillator"
+    PRODUCT_NAME "Lichtung"
 )
 
-target_sources(HarmonicOscillator
+target_sources(Lichtung
     PRIVATE
         src/PluginProcessor.cpp
         src/PluginEditor.cpp
@@ -38,7 +38,7 @@ target_sources(HarmonicOscillator
         src/ui/CustomLookAndFeel.cpp
 )
 
-target_compile_definitions(HarmonicOscillator
+target_compile_definitions(Lichtung
     PUBLIC
         JUCE_WEB_BROWSER=0
         JUCE_USE_CURL=0
@@ -46,7 +46,7 @@ target_compile_definitions(HarmonicOscillator
         JUCE_DISPLAY_SPLASH_SCREEN=0
 )
 
-target_link_libraries(HarmonicOscillator
+target_link_libraries(Lichtung
     PRIVATE
         juce::juce_audio_utils
     PUBLIC
