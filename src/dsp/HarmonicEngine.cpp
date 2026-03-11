@@ -60,12 +60,37 @@ void HarmonicEngine::prepare (double sampleRate, int /*maxBlockSize*/,
     attackParam_ = apvts.getRawParameterValue ("attack");
     releaseParam_ = apvts.getRawParameterValue ("release");
     glideParam_ = apvts.getRawParameterValue ("glide");
+
+    // Initialize SmoothedValues for all continuous parameters
+    double smoothTime = 64.0 / sampleRate;
+    scanCenterSmoothed_.reset (sampleRate, smoothTime);
+    scanWidthSmoothed_.reset (sampleRate, smoothTime);
+    spectralTiltSmoothed_.reset (sampleRate, smoothTime);
+    linFmSmoothed_.reset (sampleRate, smoothTime);
+    expFmSmoothed_.reset (sampleRate, smoothTime);
+    fmRateSmoothed_.reset (sampleRate, smoothTime);
+    attackSmoothed_.reset (sampleRate, smoothTime);
+    releaseSmoothed_.reset (sampleRate, smoothTime);
+    glideSmoothed_.reset (sampleRate, smoothTime);
+    fineTuneSmoothed_.reset (sampleRate, smoothTime);
+
+    scanCenterSmoothed_.setCurrentAndTargetValue (*scanCenterParam_);
+    scanWidthSmoothed_.setCurrentAndTargetValue (*scanWidthParam_);
+    spectralTiltSmoothed_.setCurrentAndTargetValue (*spectralTiltParam_);
+    linFmSmoothed_.setCurrentAndTargetValue (*linFmDepthParam_);
+    expFmSmoothed_.setCurrentAndTargetValue (*expFmDepthParam_);
+    fmRateSmoothed_.setCurrentAndTargetValue (*fmRateParam_);
+    attackSmoothed_.setCurrentAndTargetValue (*attackParam_);
+    releaseSmoothed_.setCurrentAndTargetValue (*releaseParam_);
+    glideSmoothed_.setCurrentAndTargetValue (*glideParam_);
+    fineTuneSmoothed_.setCurrentAndTargetValue (*fineTuneParam_);
 }
 
 double HarmonicEngine::renderSample()
 {
     // --- Glide (slide~): exponential follower on note number ---
-    double glideMs = static_cast<double> (*glideParam_);
+    glideSmoothed_.setTargetValue (*glideParam_);
+    double glideMs = static_cast<double> (glideSmoothed_.getNextValue());
     double glideSamples = std::max (1.0, glideMs * 0.001 * sampleRate_);
     glidedNote_ += (static_cast<double> (targetNote_) - glidedNote_) / glideSamples;
 
@@ -74,12 +99,14 @@ double HarmonicEngine::renderSample()
 
     // --- Section 1: Tuning (gen~ section 1) ---
     double coarseTune = static_cast<double> (*coarseTuneParam_);
-    double fineTune = static_cast<double> (*fineTuneParam_);
+    fineTuneSmoothed_.setTargetValue (*fineTuneParam_);
+    double fineTune = static_cast<double> (fineTuneSmoothed_.getNextValue());
     double tuneRatio = std::pow (2.0, (coarseTune * 100.0 + fineTune) / 1200.0);
     double freq = baseFreq * tuneRatio;
 
     // --- Section 1: FM LFO ---
-    double fmRate = static_cast<double> (*fmRateParam_);
+    fmRateSmoothed_.setTargetValue (*fmRateParam_);
+    double fmRate = static_cast<double> (fmRateSmoothed_.getNextValue());
     double fmInc = fmRate * inverseSampleRate_;
     double fmP = fmPhase_ + fmInc;
     fmP -= std::floor (fmP);
@@ -87,11 +114,13 @@ double HarmonicEngine::renderSample()
     double fmLfo = std::sin (fmP * juce::MathConstants<double>::twoPi);
 
     // --- Section 1: Linear FM (additive: Hz offset proportional to carrier) ---
-    double linFmDepth = static_cast<double> (*linFmDepthParam_);
+    linFmSmoothed_.setTargetValue (*linFmDepthParam_);
+    double linFmDepth = static_cast<double> (linFmSmoothed_.getNextValue());
     double linFmAmount = linFmDepth * freq * fmLfo;
 
     // --- Section 1: Exponential FM (multiplicative: pitch scaling) ---
-    double expFmDepth = static_cast<double> (*expFmDepthParam_);
+    expFmSmoothed_.setTargetValue (*expFmDepthParam_);
+    double expFmDepth = static_cast<double> (expFmSmoothed_.getNextValue());
     double expFmAmount = std::pow (2.0, expFmDepth * fmLfo);
 
     // --- Section 1: Combine FM and clamp ---
@@ -152,8 +181,10 @@ double HarmonicEngine::renderSample()
     double triOut = std::clamp (triRaw, -1.0, 1.0);
 
     // --- Section 4: Scan Gaussian envelope ---
-    double centerPos = static_cast<double> (*scanCenterParam_) * 7.0;
-    double sigma = 0.3 + static_cast<double> (*scanWidthParam_) * 9.7;
+    scanCenterSmoothed_.setTargetValue (*scanCenterParam_);
+    scanWidthSmoothed_.setTargetValue (*scanWidthParam_);
+    double centerPos = static_cast<double> (scanCenterSmoothed_.getNextValue()) * 7.0;
+    double sigma = 0.3 + static_cast<double> (scanWidthSmoothed_.getNextValue()) * 9.7;
     for (int i = 0; i < 8; ++i)
     {
         double dist = (static_cast<double> (i) - centerPos) / sigma;
@@ -161,7 +192,8 @@ double HarmonicEngine::renderSample()
     }
 
     // --- Section 5: Spectral tilt ---
-    double tiltParam = static_cast<double> (*spectralTiltParam_);
+    spectralTiltSmoothed_.setTargetValue (*spectralTiltParam_);
+    double tiltParam = static_cast<double> (spectralTiltSmoothed_.getNextValue());
     for (int i = 0; i < 8; ++i)
     {
         double normPos = static_cast<double> (i) / 7.0;
@@ -195,8 +227,10 @@ double HarmonicEngine::renderSample()
     harmonicMix *= 0.25;  // Normalization factor from gen~
 
     // --- Section 7: AR envelope (replaces 5ms gate ramp) ---
-    double attackMs = static_cast<double> (*attackParam_);
-    double releaseMs = static_cast<double> (*releaseParam_);
+    attackSmoothed_.setTargetValue (*attackParam_);
+    releaseSmoothed_.setTargetValue (*releaseParam_);
+    double attackMs = static_cast<double> (attackSmoothed_.getNextValue());
+    double releaseMs = static_cast<double> (releaseSmoothed_.getNextValue());
     double attackCoeff = std::exp (-1.0 / (std::max (1.0, attackMs) * 0.001 * sampleRate_));
     double releaseCoeff = std::exp (-1.0 / (std::max (1.0, releaseMs) * 0.001 * sampleRate_));
 

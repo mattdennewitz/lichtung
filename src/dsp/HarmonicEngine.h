@@ -63,6 +63,16 @@ private:
     // Smoothed parameter values
     juce::SmoothedValue<float> masterLevelSmoothed_;
     std::array<juce::SmoothedValue<float>, 8> harmLevelSmoothed_;
+    juce::SmoothedValue<float> scanCenterSmoothed_;
+    juce::SmoothedValue<float> scanWidthSmoothed_;
+    juce::SmoothedValue<float> spectralTiltSmoothed_;
+    juce::SmoothedValue<float> linFmSmoothed_;
+    juce::SmoothedValue<float> expFmSmoothed_;
+    juce::SmoothedValue<float> fmRateSmoothed_;
+    juce::SmoothedValue<float> attackSmoothed_;
+    juce::SmoothedValue<float> releaseSmoothed_;
+    juce::SmoothedValue<float> glideSmoothed_;
+    juce::SmoothedValue<float> fineTuneSmoothed_;
 
     // Cached APVTS parameter pointers
     std::array<std::atomic<float>*, 8> harmLevelParams_ = {};
