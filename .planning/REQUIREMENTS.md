@@ -40,11 +40,11 @@
 
 ### GUI
 
-- [ ] **GUI-01**: 5-section layout: Pitch, Harmonics, Scan/Tilt, FM, Output
-- [ ] **GUI-02**: 8 vertical faders for harmonic levels
-- [ ] **GUI-03**: Rotary knobs for scan center, scan width, tilt, FM controls, envelope, tuning
-- [ ] **GUI-04**: Output mode selector (menu or segmented control)
-- [ ] **GUI-05**: Sensibly sized fixed window (~700px wide)
+- [x] **GUI-01**: 5-section layout: Pitch, Harmonics, Scan/Tilt, FM, Output
+- [x] **GUI-02**: 8 vertical faders for harmonic levels
+- [x] **GUI-03**: Rotary knobs for scan center, scan width, tilt, FM controls, envelope, tuning
+- [x] **GUI-04**: Output mode selector (menu or segmented control)
+- [x] **GUI-05**: Sensibly sized fixed window (~700px wide)
 
 ### Plugin Format
 
@@ -96,11 +96,11 @@ None — scope is deliberately bounded to the Verbos module translation.
 | PERF-06 | Phase 2 | Complete |
 | PERF-07 | Phase 2 | Complete |
 | PERF-08 | Phase 3 | Complete |
-| GUI-01 | Phase 4 | Pending |
-| GUI-02 | Phase 4 | Pending |
-| GUI-03 | Phase 4 | Pending |
-| GUI-04 | Phase 4 | Pending |
-| GUI-05 | Phase 4 | Pending |
+| GUI-01 | Phase 4 | Complete |
+| GUI-02 | Phase 4 | Complete |
+| GUI-03 | Phase 4 | Complete |
+| GUI-04 | Phase 4 | Complete |
+| GUI-05 | Phase 4 | Complete |
 | FMT-01 | Phase 1 | Complete |
 | FMT-02 | Phase 1 | Complete |
 | FMT-03 | Phase 5 | Pending |
