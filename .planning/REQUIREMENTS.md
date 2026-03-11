@@ -31,12 +31,12 @@
 
 - [x] **PERF-01**: Coarse tuning (+/-24 semitones)
 - [x] **PERF-02**: Fine tuning (+/-100 cents)
-- [ ] **PERF-03**: Portamento/glide (0-2000ms)
+- [x] **PERF-03**: Portamento/glide (0-2000ms)
 - [x] **PERF-04**: AR envelope (attack 1-2000ms, release 1-5000ms, exponential curves)
-- [ ] **PERF-05**: Monophonic with legato (gate counting, no retrigger on overlapping notes)
+- [x] **PERF-05**: Monophonic with legato (gate counting, no retrigger on overlapping notes)
 - [x] **PERF-06**: MIDI note input with velocity sensitivity
 - [x] **PERF-07**: Master level control (0-1)
-- [ ] **PERF-08**: Parameter smoothing on all continuously-variable parameters
+- [x] **PERF-08**: Parameter smoothing on all continuously-variable parameters
 
 ### GUI
 
@@ -90,12 +90,12 @@ None — scope is deliberately bounded to the Verbos module translation.
 | FM-03 | Phase 3 | Complete |
 | PERF-01 | Phase 3 | Complete |
 | PERF-02 | Phase 3 | Complete |
-| PERF-03 | Phase 3 | Pending |
+| PERF-03 | Phase 3 | Complete |
 | PERF-04 | Phase 3 | Complete |
-| PERF-05 | Phase 3 | Pending |
+| PERF-05 | Phase 3 | Complete |
 | PERF-06 | Phase 2 | Complete |
 | PERF-07 | Phase 2 | Complete |
-| PERF-08 | Phase 3 | Pending |
+| PERF-08 | Phase 3 | Complete |
 | GUI-01 | Phase 4 | Pending |
 | GUI-02 | Phase 4 | Pending |
 | GUI-03 | Phase 4 | Pending |

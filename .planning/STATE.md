@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-11T03:41:42Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-03-11T03:47:05Z"
 progress:
   total_phases: 3
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -24,18 +24,18 @@ See: .planning/PROJECT.md (updated 2026-03-10)
 ## Current Position
 
 Phase: 3 of 5 (Modulation and Performance)
-Plan: 1 of 2 in current phase (03-01 complete)
-Status: Phase 3 in progress
-Last activity: 2026-03-11 -- FM, tuning, and AR envelope added to HarmonicEngine
+Plan: 2 of 2 in current phase (03-02 complete -- phase complete)
+Status: Phase 3 complete
+Last activity: 2026-03-11 -- Legato, glide, and parameter smoothing added to HarmonicEngine
 
-Progress: [█████████░] 50% (Phase 3)
+Progress: [██████████] 100% (Phase 3)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 3min
-- Total execution time: 0.2 hours
+- Total execution time: 0.25 hours
 
 **By Phase:**
 
@@ -43,10 +43,10 @@ Progress: [█████████░] 50% (Phase 3)
 |-------|-------|-------|----------|
 | 01-plugin-shell | 1 | 4min | 4min |
 | 02-waveform-engine | 2 | 4min | 2min |
-| 03-modulation-and-performance | 1 | 2min | 2min |
+| 03-modulation-and-performance | 2 | 5min | 2.5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4min), 02-01 (2min), 02-02 (2min), 03-01 (2min)
+- Last 5 plans: 01-01 (4min), 02-01 (2min), 02-02 (2min), 03-01 (2min), 03-02 (3min)
 - Trend: consistent
 
 *Updated after each plan completion*
@@ -70,6 +70,9 @@ Recent decisions affecting current work:
 - [03-01]: AR envelope uses single-pole exponential follower matching gen~ section 7
 - [03-01]: DC blocker moved after envelope to match gen~ signal flow order
 - [03-01]: Envelope target incorporates velocity directly
+- [03-02]: Glide operates on MIDI note numbers before mtof (matching Max slide~ placement)
+- [03-02]: First note sets glidedNote_ immediately (no sweep from default A4)
+- [03-02]: coarse_tune and output_select kept as direct reads (discrete/stepped)
 
 ### Pending Todos
 
@@ -88,7 +91,7 @@ Resume file: None
 
 ## Last Session
 
-**Stopped at:** Completed 03-01-PLAN.md
-**Resume with:** Plan 03-02 (remaining modulation/performance)
-**Resume file:** .planning/phases/03-modulation-and-performance/03-01-SUMMARY.md
+**Stopped at:** Completed 03-02-PLAN.md
+**Resume with:** Phase 4 (GUI) or Phase 5 (validation)
+**Resume file:** .planning/phases/03-modulation-and-performance/03-02-SUMMARY.md
 **Date:** 2026-03-11
