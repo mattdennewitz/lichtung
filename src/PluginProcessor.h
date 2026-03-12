@@ -33,6 +33,8 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    void randomizeTimbre();
+
     juce::AudioProcessorValueTreeState apvts;
 
     // Persisted UI dimensions (saved/restored with plugin state)

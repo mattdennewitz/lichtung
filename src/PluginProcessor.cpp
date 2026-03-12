@@ -197,6 +197,9 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
             engine_.handleNoteOff (msg.getNoteNumber());
         else if (msg.isPitchWheel())
             engine_.handlePitchBend (msg.getPitchWheelValue());
+        else if (msg.isController() && msg.getControllerNumber() == 22
+                 && msg.getControllerValue() > 0)
+            randomizeTimbre();
     }
 
     // Render remaining samples after last MIDI event
@@ -212,6 +215,21 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 juce::AudioProcessorEditor* PluginProcessor::createEditor()
 {
     return new PluginEditor (*this);
+}
+
+void PluginProcessor::randomizeTimbre()
+{
+    auto& rng = juce::Random::getSystemRandom();
+
+    for (int i = 0; i < 8; ++i)
+    {
+        float val = std::pow (rng.nextFloat(), (i + 1) * 0.5f);
+        apvts.getParameter ("harm_" + juce::String (i + 1))->setValueNotifyingHost (val);
+    }
+
+    apvts.getParameter ("scan_center")->setValueNotifyingHost (rng.nextFloat());
+    apvts.getParameter ("scan_width")->setValueNotifyingHost (0.3f + rng.nextFloat() * 0.7f);
+    apvts.getParameter ("spectral_tilt")->setValueNotifyingHost (0.25f + rng.nextFloat() * 0.5f);
 }
 
 void PluginProcessor::getStateInformation (juce::MemoryBlock& destData)

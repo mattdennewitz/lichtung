@@ -93,29 +93,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     randomTimbreButton.setColour (juce::TextButton::textColourOnId, CustomLookAndFeel::accentTeal);
     addAndMakeVisible (randomTimbreButton);
 
-    randomTimbreButton.onClick = [this]()
-    {
-        auto& rng = juce::Random::getSystemRandom();
-        auto& apvts = processorRef.apvts;
-
-        // Harmonic faders: amplitude = random^(n * 0.5), biasing lower harmonics higher
-        for (int i = 0; i < 8; ++i)
-        {
-            float val = std::pow (rng.nextFloat(), (i + 1) * 0.5f);
-            apvts.getParameter ("harm_" + juce::String (i + 1))->setValueNotifyingHost (val);
-        }
-
-        // Scan center: uniform 0-1
-        apvts.getParameter ("scan_center")->setValueNotifyingHost (rng.nextFloat());
-
-        // Scan width: 0.3-1.0 (avoid narrow widths that mute harmonics)
-        float widthNorm = 0.3f + rng.nextFloat() * 0.7f;
-        apvts.getParameter ("scan_width")->setValueNotifyingHost (widthNorm);
-
-        // Spectral tilt: -0.5 to +0.5 (normalized: 0.25 to 0.75)
-        float tiltNorm = 0.25f + rng.nextFloat() * 0.5f;
-        apvts.getParameter ("spectral_tilt")->setValueNotifyingHost (tiltNorm);
-    };
+    randomTimbreButton.onClick = [this]() { processorRef.randomizeTimbre(); };
 
     // --- Section header labels ---
     setupSectionLabel (pitchLabel, "PITCH");
