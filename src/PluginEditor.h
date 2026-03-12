@@ -38,6 +38,9 @@ private:
     // ComboBox
     juce::ComboBox outputSelectBox;
 
+    // Random timbre button
+    juce::TextButton randomTimbreButton;
+
     // --- Section header labels ---
     juce::Label pitchLabel, harmonicsLabel, scanLabel, fmLabel, outputLabel;
 

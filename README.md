@@ -88,6 +88,20 @@ A 4-way selector chooses between the harmonic mix, triangle, sawtooth, or square
 
 All continuous parameters use 64-sample smoothed values to prevent zipper noise. Coarse tune and output select are discrete (int/choice) and not smoothed.
 
+### Random Timbre
+
+The "?" button in the Harmonics panel header randomizes 11 timbre parameters with musically weighted distributions. Harmonic fader amplitudes are biased toward lower harmonics (`random^(n×0.5)`). Scan width is constrained to 0.3–1.0 to prevent muting, and spectral tilt stays within ±0.5 to avoid extreme filtering.
+
+## Testing
+
+```
+cmake -B build-tests -DLICHTUNG_BUILD_TESTS=ON
+cmake --build build-tests
+./build-tests/LichtungTests_artefacts/Release/LichtungTests
+```
+
+27 test cases covering pitch accuracy across sample rates (44.1k–192k), envelope edge cases, FM extremes, glide safety, scan/tilt shaping, output mode switching, Nyquist safety, DC blocking, and legato behavior.
+
 ## Building
 
 ```

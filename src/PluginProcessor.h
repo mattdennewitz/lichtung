@@ -35,9 +35,14 @@ public:
 
     juce::AudioProcessorValueTreeState apvts;
 
+    // Persisted UI dimensions (saved/restored with plugin state)
+    int lastUIWidth = 700;
+    int lastUIHeight = 450;
+
 private:
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
+    EngineParams engineParams_;
     HarmonicEngine engine_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)

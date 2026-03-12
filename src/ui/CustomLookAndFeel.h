@@ -31,6 +31,10 @@ public:
                             const juce::String& text, const juce::String& shortcutKeyText,
                             const juce::Drawable* icon, const juce::Colour* textColour) override;
 
+    void drawButtonBackground (juce::Graphics& g, juce::Button& button,
+                               const juce::Colour& backgroundColour,
+                               bool isMouseOverButton, bool isButtonDown) override;
+
     void drawLabel (juce::Graphics& g, juce::Label& label) override;
 
 private:

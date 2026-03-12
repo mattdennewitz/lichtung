@@ -128,6 +128,25 @@ void CustomLookAndFeel::drawPopupMenuItem (juce::Graphics& g, const juce::Rectan
     g.drawText (text, area.reduced (8, 0), juce::Justification::centredLeft, true);
 }
 
+void CustomLookAndFeel::drawButtonBackground (juce::Graphics& g, juce::Button& button,
+                                                const juce::Colour& bgColour,
+                                                bool isMouseOverButton, bool isButtonDown)
+{
+    auto bounds = button.getLocalBounds().toFloat().reduced (0.5f);
+    auto cornerSize = 4.0f;
+
+    // Background: slightly brighten on hover/press
+    auto bg = isButtonDown ? bgColour.brighter (0.2f)
+            : isMouseOverButton ? bgColour.brighter (0.1f)
+            : bgColour;
+    g.setColour (bg);
+    g.fillRoundedRectangle (bounds, cornerSize);
+
+    // Teal outline
+    g.setColour (accentTeal);
+    g.drawRoundedRectangle (bounds, cornerSize, 1.0f);
+}
+
 void CustomLookAndFeel::drawLabel (juce::Graphics& g, juce::Label& label)
 {
     g.setColour (labelGray);

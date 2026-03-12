@@ -85,6 +85,38 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     outputSelectAttach = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
         processorRef.apvts, "output_select", outputSelectBox);
 
+    // --- Random timbre button ---
+    randomTimbreButton.setButtonText ("?");
+    randomTimbreButton.setColour (juce::TextButton::buttonColourId, CustomLookAndFeel::panelColour);
+    randomTimbreButton.setColour (juce::TextButton::buttonOnColourId, CustomLookAndFeel::accentTeal.withAlpha (0.3f));
+    randomTimbreButton.setColour (juce::TextButton::textColourOffId, CustomLookAndFeel::accentTeal);
+    randomTimbreButton.setColour (juce::TextButton::textColourOnId, CustomLookAndFeel::accentTeal);
+    addAndMakeVisible (randomTimbreButton);
+
+    randomTimbreButton.onClick = [this]()
+    {
+        auto& rng = juce::Random::getSystemRandom();
+        auto& apvts = processorRef.apvts;
+
+        // Harmonic faders: amplitude = random^(n * 0.5), biasing lower harmonics higher
+        for (int i = 0; i < 8; ++i)
+        {
+            float val = std::pow (rng.nextFloat(), (i + 1) * 0.5f);
+            apvts.getParameter ("harm_" + juce::String (i + 1))->setValueNotifyingHost (val);
+        }
+
+        // Scan center: uniform 0-1
+        apvts.getParameter ("scan_center")->setValueNotifyingHost (rng.nextFloat());
+
+        // Scan width: 0.3-1.0 (avoid narrow widths that mute harmonics)
+        float widthNorm = 0.3f + rng.nextFloat() * 0.7f;
+        apvts.getParameter ("scan_width")->setValueNotifyingHost (widthNorm);
+
+        // Spectral tilt: -0.5 to +0.5 (normalized: 0.25 to 0.75)
+        float tiltNorm = 0.25f + rng.nextFloat() * 0.5f;
+        apvts.getParameter ("spectral_tilt")->setValueNotifyingHost (tiltNorm);
+    };
+
     // --- Section header labels ---
     setupSectionLabel (pitchLabel, "PITCH");
     setupSectionLabel (harmonicsLabel, "HARMONICS");
@@ -110,7 +142,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     setResizable (true, true);
     setResizeLimits (525, 338, 1050, 675);
     getConstrainer()->setFixedAspectRatio (700.0 / 450.0);
-    setSize (700, 450);
+    setSize (processorRef.lastUIWidth, processorRef.lastUIHeight);
 }
 
 PluginEditor::~PluginEditor()
@@ -213,6 +245,9 @@ void PluginEditor::paint (juce::Graphics& g)
 
 void PluginEditor::resized()
 {
+    processorRef.lastUIWidth = getWidth();
+    processorRef.lastUIHeight = getHeight();
+
     // --- Pitch section ---
     {
         auto section = getPitchArea();
@@ -235,7 +270,9 @@ void PluginEditor::resized()
     // --- Harmonics section ---
     {
         auto section = getHarmonicsArea();
-        harmonicsLabel.setBounds (section.removeFromTop (24));
+        auto headerRow = section.removeFromTop (24);
+        randomTimbreButton.setBounds (headerRow.removeFromRight (26).reduced (1, 2));
+        harmonicsLabel.setBounds (headerRow);
 
         auto faderWidth = section.getWidth() / 8;
 
@@ -310,4 +347,5 @@ void PluginEditor::resized()
         masterLevelLabel.setBounds (bottomHalf.removeFromTop (14));
         masterLevelSlider.setBounds (bottomHalf);
     }
+
 }

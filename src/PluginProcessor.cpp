@@ -140,8 +140,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 
 void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    juce::AudioProcessor::prepareToPlay (sampleRate, samplesPerBlock);
-
     // Bridge APVTS to decoupled EngineParams
     for (int i = 0; i < 8; ++i)
         engineParams_.harmLevels[i] = apvts.getRawParameterValue ("harm_" + juce::String (i + 1));
